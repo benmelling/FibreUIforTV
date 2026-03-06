@@ -91,6 +91,13 @@ adb install app/build/outputs/apk/debug/app-debug.apk
 
 
 > Note: some PR systems reject binary files. If `gradle-wrapper.jar` is missing in your checkout, use `gradle ...` commands directly or open the project in Android Studio and run a Gradle sync.
+>
+> If you see `Error: Unable to access jarfile .../gradle/wrapper/gradle-wrapper.jar`, this means wrapper scripts exist but the wrapper JAR does not. Use:
+>
+> ```bash
+> gradle :app:assembleDebug
+> ./scripts/build_install_tv.sh 192.168.1.50
+> ```
 
 ## 1) Prerequisites
 

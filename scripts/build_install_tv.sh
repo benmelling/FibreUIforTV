@@ -8,16 +8,24 @@ if [[ $# -ne 1 ]]; then
 fi
 
 TV_IP="$1"
+WRAPPER_JAR="gradle/wrapper/gradle-wrapper.jar"
 
-if [[ -f "gradlew" ]]; then
+if [[ -f "gradlew" && -f "$WRAPPER_JAR" ]]; then
   chmod +x gradlew
   BUILD_CMD=("./gradlew")
 elif command -v gradle >/dev/null 2>&1; then
-  echo "gradlew not found, falling back to system Gradle."
+  if [[ -f "gradlew" && ! -f "$WRAPPER_JAR" ]]; then
+    echo "gradlew detected but $WRAPPER_JAR is missing; falling back to system Gradle."
+  else
+    echo "gradlew not found; falling back to system Gradle."
+  fi
   BUILD_CMD=("gradle")
 else
-  echo "Error: neither gradlew nor system gradle was found."
-  echo "Install Gradle or open the project in Android Studio and Sync first."
+  echo "Error: cannot build because neither a working Gradle wrapper nor system gradle is available."
+  echo "Fix options:"
+  echo "  1) install Gradle and retry, or"
+  echo "  2) restore $WRAPPER_JAR, or"
+  echo "  3) open the project in Android Studio and Sync."
   exit 1
 fi
 
