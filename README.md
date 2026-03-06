@@ -32,6 +32,66 @@ This repo gives you a high-quality **starting foundation**, not a complete comme
 
 ---
 
+## Quick answer: build + install on your TV
+
+1. Turn on **Developer options** on your TV and enable **USB debugging** / **Network debugging**.
+2. Find your TV IP address (example: `192.168.1.50`).
+3. In Terminal, go to the real folder where this repo exists on your Mac (do **not** type `/path/to/...` literally):
+
+```bash
+cd ~/Desktop/FibreUIforTV
+pwd
+ls -la
+```
+
+You should see `gradlew` in the `ls -la` output.
+
+4. Build the APK:
+
+```bash
+chmod +x gradlew
+./gradlew :app:assembleDebug
+# or fallback when gradlew is unavailable:
+gradle :app:assembleDebug
+```
+
+5. Install to TV (replace `192.168.1.50` with your actual TV IP):
+
+```bash
+adb connect 192.168.1.50:5555
+adb install -r app/build/outputs/apk/debug/app-debug.apk
+```
+
+6. Launch **Fibre UI TV** from Apps on your TV.
+
+### One-command helper (recommended)
+
+From repo root:
+
+```bash
+./scripts/build_install_tv.sh 192.168.1.50
+```
+
+This script builds the APK, connects ADB, and installs automatically.
+
+### Why your previous commands failed
+
+- `cd /path/to/FibreUIforTV` failed because `/path/to/...` is a placeholder, not a real path.
+- `./gradlew` failed because you were not in the folder that contains `gradlew`.
+- `adb connect <TV_IP>:5555` failed because `<TV_IP>` is a placeholder; use a real IP like `192.168.1.50`.
+
+If install fails with `INSTALL_FAILED_VERSION_DOWNGRADE`, run:
+
+```bash
+adb uninstall com.fibreuitv
+adb install app/build/outputs/apk/debug/app-debug.apk
+```
+
+---
+
+
+> Note: some PR systems reject binary files. If `gradle-wrapper.jar` is missing in your checkout, use `gradle ...` commands directly or open the project in Android Studio and run a Gradle sync.
+
 ## 1) Prerequisites
 
 Install:
@@ -54,6 +114,8 @@ Install:
 
 ```bash
 ./gradlew :app:assembleDebug
+# or fallback:
+gradle :app:assembleDebug
 ```
 
 APK output:
@@ -64,8 +126,10 @@ APK output:
 
 ## 3) Install on TV
 
+(Use your actual TV IP.)
+
 ```bash
-adb connect <TV_IP>:5555
+adb connect 192.168.1.50:5555
 adb install -r app/build/outputs/apk/debug/app-debug.apk
 ```
 
